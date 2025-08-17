@@ -88,3 +88,5 @@ If asked to list locations, list from the above. If asked for "nearest", you may
 
 const PORT = process.env.PORT || 8788;
 app.listen(PORT, () => console.log(`Mr Wash chat server on http://localhost:${PORT} (serving ${publicDir})`));
+
+app.get("/healthz", (req, res) => res.json({ ok: true }));
