@@ -1,0 +1,21 @@
+name: CI
+on:
+  push: { branches: [ main ] }
+  pull_request:
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with: { node-version: '22' }
+      - run: npm ci
+      - run: npm test --if-present
+  deploy:
+    needs: test
+    if: github.ref == 'refs/heads/main' && needs.test.result == 'success'
+    runs-on: ubuntu-latest
+    steps:
+      - name: Trigger Render deploy
+        env: { RENDER_DEPLOY_HOOK: ${{ secrets.RENDER_DEPLOY_HOOK }} }
+        run: curl -fsS -X POST "$RENDER_DEPLOY_HOOK"
