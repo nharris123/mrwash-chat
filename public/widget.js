@@ -75,7 +75,7 @@
     asBubbles(msg, 'user');
     $input.value = '';
     try {
-      const res = await fetch(`${API_BASE}/chat`, {
+      const res = await fetch(`${API_BASE}/smartchat`, {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({ message: msg })
