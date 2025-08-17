@@ -104,3 +104,42 @@ app.get("/version", (req, res) => {
     env: process.env.MRWASH_ENV || "production"
   });
 });
+
+// --- Smart, deterministic answers for common intents ---
+app.post("/smartchat", async (req, res) => {
+  try {
+    const msg = (req.body?.message || "").toString();
+    const q = msg.trim().toLowerCase();
+
+    // Load locations on-demand (no top-level import needed)
+    const { LOCATIONS_LIST_TEXT } = await import("./data/locations.js");
+
+    // Simple intent checks
+    const wantsLocations = /\b(location|locations|store|stores|where.*(location|store))\b/.test(q);
+    const wantsHours     = /\b(hour|hours|open|close|opening|closing)\b/.test(q);
+
+    if (wantsLocations) {
+      return res.type("text/plain").send(LOCATIONS_LIST_TEXT);
+    }
+
+    if (wantsHours) {
+      const hours =
+        "All Mr Wash locations are open daily from 8 AM to 8 PM. " +
+        "Holiday hours may vary by location. Share your ZIP code if you want the closest location’s details.";
+      return res.type("text/plain").send(hours);
+    }
+
+    // Fallback: delegate to your existing /chat route so nothing else breaks
+    const port = process.env.PORT || 10000;
+    const r = await fetch(`http://127.0.0.1:${port}/chat`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: msg })
+    });
+    const t = await r.text();
+    return res.type("text/plain").send(t || "I’m here to help with locations, hours, memberships, and pricing.");
+  } catch (e) {
+    console.error("smartchat error", e);
+    return res.type("text/plain").send("Sorry—something went wrong. Try asking about locations or hours.");
+  }
+});
