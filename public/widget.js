@@ -60,12 +60,10 @@ if (!window.__mrwash_widget__) {
 
   async function sendChat(message){
     try {
-      const r = await fetch(`${API_BASE}/chat`, {
-        method:'POST', headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ message })
-      });
-      const j = await r.json();
-      addMsg(j.reply || j.error || 'No reply', 'bot');
+      const r = await let body = await r.text();
+    let j; try { j = JSON.parse(body); } catch {}
+    if (!r.ok) throw new Error((j&&j.error? j.error : body)||(`HTTP `));
+    addMsg((j&&j.reply) || "No reply", "bot");
     } catch (e) {
       console.error(e);
       addMsg('Sorry—something went wrong. Please try again.', 'bot');
