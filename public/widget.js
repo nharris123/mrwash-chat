@@ -1,3 +1,5 @@
+/* API base autoconfig */
+(function(){try{const s=document.currentScript||[...document.scripts].find(x=>x.src.includes("/widget.js"));const base=(window.MR_WASH_WIDGET&&window.MR_WASH_WIDGET.apiBase)||(s?new URL(s.src).origin:"");window.API_BASE=base;window.__MRW_API_BASE=base;}catch(e){}})();
 (function(){
   const css = `
     #mw-chat-bubble {
