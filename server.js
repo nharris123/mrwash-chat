@@ -1,5 +1,6 @@
 import 'dotenv/config';
 import express from 'express';
+import cors from "cors";
 import cors from 'cors';
 import path from 'path';
 import { fileURLToPath } from 'url';
@@ -12,6 +13,7 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
 const app = express();
+app.use(cors({ origin: (process.env.ALLOWED_ORIGINS||"*").split(",").map(s=>s.trim()), credentials: true }));
 app.get("/healthz", (req, res) => res.json({ ok: true }));
 app.get("/version", (req, res) => res.json({
   sha: process.env.RENDER_GIT_COMMIT || "dev",
