@@ -1,0 +1,102 @@
+[
+  {
+    "name": "Mr Wash – Tysons",
+    "address": "8218 Leesburg Pike",
+    "city": "Vienna",
+    "state": "VA",
+    "zip": "22182",
+    "lat": 38.91782,
+    "lng": -77.22903
+  },
+  {
+    "name": "Mr Wash – Alexandria (Mount Vernon Ave)",
+    "address": "3407 Mount Vernon Ave",
+    "city": "Alexandria",
+    "state": "VA",
+    "zip": "22305",
+    "lat": 38.83615,
+    "lng": -77.06057
+  },
+  {
+    "name": "Mr Wash – Alexandria (Van Dorn St)",
+    "address": "420 S Van Dorn St",
+    "city": "Alexandria",
+    "state": "VA",
+    "zip": "22304",
+    "lat": 38.80788,
+    "lng": -77.13251
+  },
+  {
+    "name": "Mr Wash – Arlington (Four Mile Run)",
+    "address": "4148 S Four Mile Run Dr",
+    "city": "Arlington",
+    "state": "VA",
+    "zip": "22206",
+    "lat": 38.84806,
+    "lng": -77.09904
+  },
+  {
+    "name": "Mr Wash – Arlington (Glebe Rd)",
+    "address": "101 N Glebe Rd",
+    "city": "Arlington",
+    "state": "VA",
+    "zip": "22203",
+    "lat": 38.87219,
+    "lng": -77.10231
+  },
+  {
+    "name": "Mr Wash – Baileys Crossroads",
+    "address": "5901 Columbia Pike",
+    "city": "Falls Church",
+    "state": "VA",
+    "zip": "22041",
+    "lat": 38.84787,
+    "lng": -77.13478
+  },
+  {
+    "name": "Mr Wash – Centreville",
+    "address": "13817 Route 29 (Lee Hwy)",
+    "city": "Centreville",
+    "state": "VA",
+    "zip": "20121",
+    "lat": 38.8381612,
+    "lng": -77.4248484
+  },
+  {
+    "name": "Mr Wash – Falls Church (Gallows Rd)",
+    "address": "3013 Gallows Rd",
+    "city": "Falls Church",
+    "state": "VA",
+    "zip": "22042",
+    "lat": 38.8687182,
+    "lng": -77.2264897
+  },
+  {
+    "name": "Mr Wash – Kensington",
+    "address": "3817 Dupont Ave",
+    "city": "Kensington",
+    "state": "MD",
+    "zip": "20895",
+    "lat": 39.0312114,
+    "lng": -77.0762344
+  },
+  {
+    "name": "Mr Wash – Silver Spring",
+    "address": "7996 Georgia Ave",
+    "city": "Silver Spring",
+    "state": "MD",
+    "zip": "20910",
+    "lat": 38.994373,
+    "lng": -77.029778
+  },
+  {
+    "name": "Mr Wash – Rehoboth Beach",
+    "address": "19898 Hebron Rd",
+    "city": "Rehoboth Beach",
+    "state": "DE",
+    "zip": "19971",
+    "lat": 38.7315292358398,
+    "lng": -75.087043762207
+  },
+
+]
