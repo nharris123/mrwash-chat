@@ -87,3 +87,58 @@
   // greeting
   addMessage("Assistant", "Hi there! How can I help you today?");
 })();
+/* UI formatter v2: enumerated "1. 2. 3." lists */
+(function mrwEnumeratedNormalizer(){ try {
+  const root = document.querySelector('#mrw-widget,[data-mrw-widget],.mrw-widget') || document;
+  const container = root.querySelector('.mrw-messages, [data-messages], .messages') || root;
+
+  const toEnumList = (raw) => {
+    // Find sequences like "1. Item ... 2. Item ... 3. Item ..."
+    const enumRe = /(?:^|\s)(\d+)\.\s/g;
+    const matches = [...raw.matchAll(enumRe)];
+    if (matches.length < 3) return null; // only convert if 3+ items
+
+    // Capture each item until the next "N. " or end
+    const itemRe = /(\d+)\.\s([\s\S]*?)(?=(?:\s\d+\.\s)|$)/g;
+    const items = [];
+    let m;
+    while ((m = itemRe.exec(raw)) !== null) {
+      const text = m[2].trim().replace(/\s+/g, ' ');
+      if (text) items.push(text);
+    }
+    if (!items.length) return null;
+
+    // Build ordered list HTML
+    const esc = s => s.replace(/[&<>]/g, c=>({ '&':'&amp;','<':'&lt;','>':'&gt;' }[c]));
+    const asMapsLink = (t) => {
+      // Add a small maps link after each line (generic, safe)
+      const href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(t);
+      return esc(t) + ' <a class="mrw-mini" href="'+href+'" target="_blank" rel="noopener">Map</a>';
+    };
+    return '<ol class="mrw-enum">' + items.map(t => '<li>'+asMapsLink(t)+'</li>').join('') + '</ol>';
+  };
+
+  const processNode = (node) => {
+    const txtEl = node.querySelector?.('.mrw-text, .text, .content, [data-text]') || node;
+    if (!txtEl || txtEl.querySelector('ol, ul')) return; // already formatted
+    const raw = (txtEl.textContent || '').trim();
+    if (!raw) return;
+    const listHTML = toEnumList(raw);
+    if (listHTML) {
+      txtEl.innerHTML = listHTML;
+    }
+  };
+
+  // Initial pass
+  container.querySelectorAll('.mrw-bubble, .message, [data-role]').forEach(processNode);
+
+  // Observe new messages
+  new MutationObserver(muts => muts.forEach(m =>
+    m.addedNodes.forEach(n => {
+      if (n.nodeType===1) {
+        if (n.matches('.mrw-bubble, .message, [data-role]')) processNode(n);
+        n.querySelectorAll && n.querySelectorAll('.mrw-bubble, .message, [data-role]').forEach(processNode);
+      }
+    })
+  )).observe(container, { subtree:true, childList:true });
+} catch(e){ console.warn('mrw enumerated normalizer failed', e); } })();
