@@ -91,3 +91,11 @@ const PORT = process.env.PORT || 8788;
 app.listen(PORT, () => console.log(`Mr Wash chat server on http://localhost:${PORT} (serving ${publicDir})`));
 
 app.get("/healthz", (req, res) => res.json({ ok: true }));
+
+// Version endpoint (Render sets RENDER_GIT_COMMIT)
+app.get("/version", (req, res) => {
+  res.json({
+    sha: process.env.RENDER_GIT_COMMIT || "dev",
+    env: process.env.MRWASH_ENV || "production"
+  });
+});
