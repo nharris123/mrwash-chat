@@ -23,3 +23,8 @@
 .mrw-widget .mrw-enum li { margin: .2rem 0; }
 .mrw-widget .mrw-mini { font-size: 12px; text-decoration: none; opacity: .75; }
 .mrw-widget .mrw-mini:hover { text-decoration: underline; opacity: 1; }
+/* UI polish v2 */
+.mrw-widget .mrw-enum { margin: .25rem 0 .5rem 1.25rem; padding-left: .25rem; }
+.mrw-widget .mrw-enum li { margin: .2rem 0; }
+.mrw-widget .mrw-mini { font-size: 12px; text-decoration: none; opacity: .75; }
+.mrw-widget .mrw-mini:hover { text-decoration: underline; opacity: 1; }
