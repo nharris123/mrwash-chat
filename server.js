@@ -13,6 +13,10 @@ const __dirname = path.dirname(__filename);
 
 const app = express();
 app.get("/healthz", (req, res) => res.json({ ok: true }));
+app.get("/version", (req, res) => res.json({
+  sha: process.env.RENDER_GIT_COMMIT || "dev",
+  env: process.env.MRWASH_ENV || "production"
+}));app.get("/healthz", (req, res) => res.json({ ok: true }));
 app.use(express.json());
 
 // CORS (allow all in dev if ALLOWED_ORIGINS is blank)
