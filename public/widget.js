@@ -197,3 +197,114 @@
     })
   )).observe(container, { subtree:true, childList:true });
 } catch(e){ console.warn('mrw enumerated normalizer failed', e); } })();
+/* UI formatter v3: robust */
+(function(){
+  try {
+    if (window.__mrwFormatterApplied) return;
+    window.__mrwFormatterApplied = true;
+
+    const esc = s => String(s||'').replace(/[&<>]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));
+    const linkify = (s) => s
+      .replace(/((https?:\/\/|www\.)[^\s)]+)(?=\s|$)/gi, m => {
+        const href = m.startsWith('http') ? m : 'https://' + m;
+        return `<a href="${href}" target="_blank" rel="noopener noreferrer">${m}</a>`;
+      })
+      .replace(/(\+?\d[\d\s().-]{8,}\d)/g, m => `<a href="tel:${m.replace(/[^\d+]/g,'')}">${m}</a>`);
+
+    function toHTML(raw) {
+      const t = String(raw||'').replace(/\r\n/g, '\n').trim();
+      if (!t) return '';
+
+      // 1) Inline enumerations -> <ol>
+      const itemRe = /(\d+)\.\s([\s\S]*?)(?=(?:\s\d+\.\s)|$)/g;
+      const items = [];
+      let m;
+      while ((m = itemRe.exec(t)) !== null) {
+        const text = m[2].trim().replace(/\s+/g,' ');
+        if (text) items.push(text);
+      }
+      if (items.length >= 3) {
+        const mapLink = (txt) => {
+          const href = 'https://www.google.com/maps/search/?api=1&query=' + encodeURIComponent(txt);
+          return esc(txt) + ' <a class="mrw-mini" href="'+href+'" target="_blank" rel="noopener">Map</a>';
+        };
+        return '<ol class="mrw-enum">' + items.map(x=>`<li>${mapLink(x)}</li>`).join('') + '</ol>';
+      }
+
+      // 2) Bullets (lines starting with - or •)
+      const lines = t.split('\n');
+      let html = '', listType = null;
+      const flush = () => { if (listType) { html += listType==='ol' ? '</ol>' : '</ul>'; listType=null; } };
+      for (const rawLine of lines) {
+        const l = rawLine.trim();
+        if (!l) { flush(); html += '<div style="height:.25rem"></div>'; continue; }
+        if (/^[-•]\s+/.test(l)) {
+          if (listType!=='ul') { flush(); html += '<ul class="mrw-list">'; listType='ul'; }
+          html += `<li>${linkify(esc(l.replace(/^[-•]\s+/,'')))}</li>`;
+        } else if (/^\d+\.\s+/.test(l)) {
+          if (listType!=='ol') { flush(); html += '<ol class="mrw-enum">'; listType='ol'; }
+          html += `<li>${linkify(esc(l.replace(/^\d+\.\s+/,'')))}</li>`;
+        } else {
+          flush();
+          // Gentle sentence splitting for readability
+          const chunk = l.replace(/([.!?])\s+(?=[A-Z0-9])/g, '$1\n\n');
+          const paras = chunk.split(/\n{2,}/).map(p=>`<p>${linkify(esc(p))}</p>`).join('');
+          html += paras;
+        }
+      }
+      flush();
+      return html;
+    }
+
+    function formatEl(el){
+      try{
+        if (!el || el.dataset && el.dataset.mrwFormatted) return;
+        const textHost = el.querySelector?.('.mrw-text, .text, .content, [data-text]') || el;
+        if (!textHost) return;
+        const raw = textHost.textContent || '';
+        const out = toHTML(raw);
+        if (out && out !== raw) {
+          textHost.innerHTML = out;
+          el.dataset && (el.dataset.mrwFormatted = '1');
+        }
+      } catch(e){}
+    }
+
+    function scan(root){
+      if (!root) return;
+      // Try common message/bubble wrappers; fall back to any element with lots of sentences
+      const candidates = root.querySelectorAll?.(
+        '.mrw-bubble, .message, [data-role="assistant"], [data-role="bot"], .assistant, .bot, [data-text]'
+      );
+      if (candidates && candidates.length) {
+        candidates.forEach(formatEl);
+      } else if (root.textContent && /(\d+\.\s.*\d+\.\s)|(\.\s[A-Z0-9])/.test(root.textContent)) {
+        formatEl(root);
+      }
+      // Recurse into open shadow roots
+      if (root.querySelectorAll) {
+        root.querySelectorAll('*').forEach(node => {
+          if (node.shadowRoot) scan(node.shadowRoot);
+        });
+      }
+    }
+
+    // Initial pass
+    scan(document);
+
+    // Observe new messages anywhere in the page (and inside open shadow roots)
+    const obs = new MutationObserver(muts => {
+      muts.forEach(m => {
+        m.addedNodes.forEach(n => {
+          if (n.nodeType === 1) {
+            scan(n);
+            if (n.shadowRoot) scan(n.shadowRoot);
+          }
+        });
+      });
+    });
+    obs.observe(document.documentElement, { childList: true, subtree: true });
+  } catch(e) {
+    console.warn('mrw robust formatter failed', e);
+  }
+})();

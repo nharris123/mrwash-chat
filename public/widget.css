@@ -28,3 +28,10 @@
 .mrw-widget .mrw-enum li { margin: .2rem 0; }
 .mrw-widget .mrw-mini { font-size: 12px; text-decoration: none; opacity: .75; }
 .mrw-widget .mrw-mini:hover { text-decoration: underline; opacity: 1; }
+/* UI polish v3 */
+.mrw-widget .mrw-text, .mrw-widget .message .text, .mrw-widget [data-text] { white-space: pre-wrap; }
+.mrw-widget .mrw-bubble p { margin: 0 0 .5rem; }
+.mrw-widget .mrw-enum { margin: .25rem 0 .5rem 1.25rem; padding-left: .25rem; }
+.mrw-widget .mrw-enum li { margin: .2rem 0; }
+.mrw-widget .mrw-mini { font-size: 12px; text-decoration: none; opacity: .75; }
+.mrw-widget .mrw-mini:hover { text-decoration: underline; opacity: 1; }
